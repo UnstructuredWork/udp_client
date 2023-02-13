@@ -33,7 +33,7 @@
   ### 4) Run
     $ python main.py
  
-  ### 5) synchronize time
+  ### 5) Synchronize time
   ##### [doc/time_synchronization.pptx](doc/time_synchronization.pptx)
 
   ### 6) Check time synchronization
