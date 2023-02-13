@@ -1,4 +1,5 @@
 from __future__ import division
+import os
 import time
 import math
 import zlib
@@ -6,9 +7,12 @@ import socket
 import struct
 
 from threading import Thread
-from webcam.webcam_dual_stream import Streamer
+from src.webcam.webcam_dual_stream import Streamer
 
-streamer = Streamer("../config/config.yaml")
+current_dir = os.getcwd()
+config_file = os.path.join(current_dir, "config/config.yaml")
+
+streamer = Streamer(config_file)
 streamer.run()
 
 class Package:
