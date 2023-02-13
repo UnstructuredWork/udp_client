@@ -31,6 +31,7 @@
         r_serial: RIGHT_CAMERA_SERIAL_NUMBER
      
   ### 4) Run
+  ##### modify 'HOST' and 'PORT' before using
     $ python main.py
  
   ### 5) Synchronize time
