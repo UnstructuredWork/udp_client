@@ -1,0 +1,11 @@
+camera_resolution: "1080"
+stream_resolution: "1080"
+fps: 60
+format: "YUYV"    # ['NV12', 'YUYV', 'H264']
+subsystem: "video4linux"
+show_fps: False
+
+l_serial: "5311372000050"
+r_serial: "5311372000739"
+
+
