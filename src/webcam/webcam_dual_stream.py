@@ -1,8 +1,9 @@
 import cv2
 import time
 
+from nvjpeg import NvJpeg
 from threading import Thread
-from turbojpeg import TurboJPEG, TJFLAG_PROGRESSIVE
+from turbojpeg import TurboJPEG
 
 from src.load_cfg import LoadConfig
 from src.webcam.webcam_set import CamSet
@@ -21,8 +22,6 @@ class Streamer:
         self.l_cam = None
         self.r_cam = None
 
-        self.jpeg = TurboJPEG()
-
         self.current_time = time.time()
         self.preview_time = time.time()
 
@@ -36,6 +35,11 @@ class Streamer:
 
         self.config = LoadConfig(config_path).info
         self.stat = self.config["show_fps"]
+
+        if self.config["gpu_compression"]:
+            self.comp = NvJpeg()
+        else:
+            self.comp = TurboJPEG()
 
         w, h = get_resolution(self.config["stream_resolution"])
 
@@ -105,7 +109,7 @@ class Streamer:
 
         self.l_frame_time_cloud = datetime.now().time().isoformat().encode('utf-8')
 
-        return self.jpeg.encode(frame, quality=50)
+        return self.comp.encode(frame, 50)
 
     def l_frame_bytescode_unity(self):
         frame = self.l_img
@@ -114,7 +118,7 @@ class Streamer:
 
         self.l_frame_time_unity = datetime.now().time().isoformat().encode('utf-8')
 
-        return self.jpeg.encode(frame, quality=50)
+        return self.comp.encode(frame, 50)
 
     def r_frame_bytescode_cloud(self):
         frame = self.r_img
@@ -123,7 +127,7 @@ class Streamer:
 
         self.r_frame_time_cloud = datetime.now().time().isoformat().encode('utf-8')
 
-        return self.jpeg.encode(frame, quality=50)
+        return self.comp.encode(frame, 50)
 
     def r_frame_bytescode_unity(self):
         frame = self.r_img
@@ -132,7 +136,7 @@ class Streamer:
 
         self.r_frame_time_unity = datetime.now().time().isoformat().encode('utf-8')
 
-        return self.jpeg.encode(frame, quality=50)
+        return self.comp.encode(frame, 50)
 
     def fps(self):
         self.current_time = time.time()
