@@ -8,4 +8,4 @@ show_fps: False
 l_serial: "5311372000050"
 r_serial: "5311372000739"
 
-gpu_compression: False # True: NvJpeg, False: TurboJPEG
+gpu_compression: True # True: NvJpeg, False: TurboJPEG

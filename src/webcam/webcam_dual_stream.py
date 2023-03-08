@@ -109,7 +109,7 @@ class Streamer:
 
         self.l_frame_time_cloud = datetime.now().time().isoformat().encode('utf-8')
 
-        return self.comp.encode(frame, 50)
+        return self.comp.encode(frame, 40)
 
     def l_frame_bytescode_unity(self):
         frame = self.l_img
@@ -118,7 +118,7 @@ class Streamer:
 
         self.l_frame_time_unity = datetime.now().time().isoformat().encode('utf-8')
 
-        return self.comp.encode(frame, 50)
+        return self.comp.encode(frame, 40)
 
     def r_frame_bytescode_cloud(self):
         frame = self.r_img
@@ -127,7 +127,7 @@ class Streamer:
 
         self.r_frame_time_cloud = datetime.now().time().isoformat().encode('utf-8')
 
-        return self.comp.encode(frame, 50)
+        return self.comp.encode(frame, 40)
 
     def r_frame_bytescode_unity(self):
         frame = self.r_img
@@ -136,7 +136,7 @@ class Streamer:
 
         self.r_frame_time_unity = datetime.now().time().isoformat().encode('utf-8')
 
-        return self.comp.encode(frame, 50)
+        return self.comp.encode(frame, 40)
 
     def fps(self):
         self.current_time = time.time()
