@@ -68,11 +68,15 @@ class Kinect:
 
         self.started = True
 
+        print("[INFO] Kinect connection is complete.")
+
     def stop(self):
         self.started = False
 
         self.k4a._stop_imu()
         self.k4a.stop()
+
+        print("[INFO] Kinect stopped.")
 
     def imu_update(self):
         while True:
