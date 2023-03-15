@@ -32,7 +32,8 @@
      
   ### 4) Run
   ##### modify 'HOST' and 'PORT' before using
-    $ python main.py
+    $ python main1.py
+    $ python main2.py
  
   ### 5) Synchronize time
   ##### [doc/time_synchronization.pptx](doc/time_synchronization.pptx)

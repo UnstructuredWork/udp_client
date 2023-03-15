@@ -9,3 +9,10 @@ l_serial: "5311372000050"
 r_serial: "5311372000739"
 
 gpu_compression: True # True: NvJpeg, False: TurboJPEG
+
+unity_host: "10.252.101.139"
+cloud_host: "10.252.101.191"
+
+l_cam_port: [5001, 5003, 5005, 5007]
+r_cam_port: [5002, 5004, 5006]
+kinect_port: [5008]
