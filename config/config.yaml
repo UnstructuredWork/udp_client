@@ -1,5 +1,5 @@
 camera_resolution: "1080"
-stream_resolution: "1080"
+stream_resolution: "360"
 fps: 60
 format: "YUYV"    # ['NV12', 'YUYV', 'H264']
 subsystem: "video4linux"
@@ -10,9 +10,13 @@ r_serial: "5311372000739"
 
 gpu_compression: True # True: NvJpeg, False: TurboJPEG
 
-unity_host: "10.252.101.139"
+unity_host: "10.252.101.92"
 cloud_host: "10.252.101.191"
 
 l_cam_port: [5001, 5003, 5005, 5007]
 r_cam_port: [5002, 5004, 5006]
 kinect_port: [5008]
+
+ntp_server: "10.252.101.139"
+restart: True
+offset: 2.0
