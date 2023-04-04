@@ -9,3 +9,7 @@ l_serial: "5311372000050"
 r_serial: "5311372000739"
 
 gpu_compression: True # True: NvJpeg, False: TurboJPEG
+
+ntp_server: "10.252.101.139"
+restart: True
+offset: 2.0

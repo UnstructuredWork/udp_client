@@ -33,6 +33,7 @@
   ### 4) Run
   ##### modify 'HOST' and 'PORT' before using
     $ python main.py
+    $ python ntp.py
  
   ### 5) Synchronize time
   ##### [doc/time_synchronization.pptx](doc/time_synchronization.pptx)
