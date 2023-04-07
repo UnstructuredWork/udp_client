@@ -1,4 +1,4 @@
-from src.ntp_client import NtpClient
+from test.ntp_client import NtpClient
 
 ntp = NtpClient()
 

@@ -93,7 +93,6 @@ class Streamer:
                 if ret:
                     self.l_img = frame
 
-
     def r_cam_update(self):
         while True:
             if self.started:

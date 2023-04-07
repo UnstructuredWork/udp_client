@@ -3,22 +3,20 @@ import cv2
 import numpy as np
 from threading import Thread
 
-from src.load_cfg import LoadConfig
 from src.webcam.webcam_set import CamSet
 from src.webcam.resolution import get_resolution
 
-from datetime import datetime
 
 class Streamer:
-    def __init__(self, config_path):
+    def __init__(self, cfg):
         self.openCL = False
 
         if cv2.ocl.haveOpenCL():
             cv2.ocl.setUseOpenCL(True)
             self.openCL = True
+        self.cfg = cfg
 
-        self.l_cam = None
-        # self.r_cam = None
+        self.cam = None
 
         self.current_time = time.time()
         self.preview_time = time.time()
@@ -33,8 +31,7 @@ class Streamer:
         # self.r_img = None
         self.lr_img = None
 
-        self.config = LoadConfig(config_path).info
-        self.stat = self.config["show_fps"]
+        self.stat = self.cfg
 
         w, h = get_resolution(self.config["stream_resolution"])
 

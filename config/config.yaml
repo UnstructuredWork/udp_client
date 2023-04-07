@@ -1,15 +1,57 @@
-camera_resolution: "1080"
-stream_resolution: "1080"
-fps: 60
-format: "YUYV"    # ['NV12', 'YUYV', 'H264']
-subsystem: "video4linux"
-show_fps: False
+SYSTEM:
+  LOG:
+    SHOW: True
+    SAVE: False
+    PRINT_PERIOD: 10
 
-l_serial: "5311372000050"
-r_serial: "5311372000739"
+  SYNC:
+    SERVER: 10.252.101.111
+    RESTART: True
+    TOLERANCE: 2
 
-gpu_compression: True # True: NvJpeg, False: TurboJPEG
+SERVER:
+  CLOUD:
+    HOST: ['10.252.101.175', '10.252.101.183']
+    PORT:
+      STEREO_L: 5001
+      STEREO_R: 5002
+      RGBD: 5003
+    SIZE:
+      STEREO_L: [ 1920, 1080 ]
+      STEREO_R: [ 1920, 1080 ]
+      RGBD: [ 540, 360 ]
+    SEND: True
 
-ntp_server: "10.252.101.139"
-restart: True
-offset: 2.0
+  UNITY:
+    HOST: ['10.252.101.111']
+    PORT:
+      STEREO_L: 5001
+      STEREO_R: 5002
+      RGBD: 5003
+    SIZE:
+      STEREO_L: [ 540, 360 ]
+      STEREO_R: [ 540, 360 ]
+      RGBD: [ 540, 360 ]
+    SEND: False
+
+HW_INFO:
+  STEREO_L:   # Left Sony camera
+    TYPE: sony
+    SIZE: [1920, 1080]
+    USE: True
+    FPS: 60
+    SERIAL: "5311303100891"
+    FORMAT: YUYV
+
+  STEREO_R:   # Right Sony camera
+    TYPE: sony
+    SIZE: [1920, 1080]
+    USE: True
+    FPS: 60
+    SERIAL: "5311372000910"
+    FORMAT: YUYV
+  RGBD:   # Azure Kinect camera
+    TYPE: kinect
+    SIZE: [1280, 720]
+    USE: True
+    FPS: 30

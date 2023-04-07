@@ -1,20 +1,33 @@
-from src.client import LeftClient, RightClient
-from threading import Thread
+import argparse
 
-UNITY_HOST = "10.252.101.174"  # UNITY PC IP
-CLOUD_HOST = "10.252.101.191"  # CLOUD PC IP
+from src.config import get_cfg, setup_logger, setup_chrony
+from src import Stream
 
-HOST = [UNITY_HOST, CLOUD_HOST]
 
-LEFT_PORT = [5001, 5003, 5005, 5007]
-RIGHT_PORT = [5002, 5004, 5006]
+def main():
+    args = get_parser()
+    cfg = setup_cfg(args.config_file)
 
-left = LeftClient(HOST, LEFT_PORT)
-right = RightClient(HOST, RIGHT_PORT)
+    setup_logger(cfg.SYSTEM.LOG.SAVE)
+    setup_chrony(cfg.SYSTEM.SYNC.SERVER)
 
-l_thr = Thread(target=left.run, args=())
-r_thr = Thread(target=right.run, args=())
+    s = Stream(cfg)
+    s.build_pipeline()
+
+    s.run()
+
+def setup_cfg(cfg_file):
+    cfg = get_cfg()
+    cfg.merge_from_file(cfg_file)
+    return cfg
+
+def get_parser():
+    parser = argparse.ArgumentParser(description="Cloud Server configs")
+    parser.add_argument('-c', '--config-file',
+                        default="./config/config.yaml",
+                        help="A configuration file of camera")
+    return parser.parse_args()
+
 
 if __name__ == "__main__":
-    l_thr.start()
-    r_thr.start()
+    main()
