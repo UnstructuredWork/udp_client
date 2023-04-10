@@ -46,7 +46,7 @@ class Stream:
 
             if self.cfg.HW_INFO.RGBD.USE:
                 self.meta['RGBD'] = _gen_meta()
-                self.proc_list.extend([1, Process(target=stream_kinect, args=(self.cfg, self.meta))])
+                self.proc_list.extend([1, Process(target=stream_kinect, args=(self.cfg, self.meta, 'RGBD'))])
         else:
             logger.info("No camera selected.")
 

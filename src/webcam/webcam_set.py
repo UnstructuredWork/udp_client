@@ -6,34 +6,32 @@ from src.webcam.find_port import serial2port
 
 
 class CamSet(CamProp):
-    def __init__(self, prop, loc):
+    def __init__(self, prop):
         super().__init__()
 
         self.prop = prop
-        self.loc = "l_serial" if loc == "left" else "r_serial"
 
         self.cam_set()
 
     def cam_set(self):
-
         try:
-            self.set_port(serial2port(self.prop["subsystem"], self.prop[self.loc]))
+            self.set_port(serial2port("video4linux", self.prop.SERIAL))
         except Exception as e:
             print(e)
             print("[ERROR] Retry with the right device serial.")
             print("[ERROR] Process is shutdown.")
             sys.exit()
 
-        self.set_fps(self.prop["fps"])
+        self.set_fps(self.prop.FPS)
 
         try:
-            self.set_resolution(self.prop["camera_resolution"])
+            self.set_resolution(self.prop.SIZE[1])
         except Exception as e:
             print(e)
             print("[WARNING] Resolution will set default value : ['1080']")
 
         try:
-            self.set_format(self.prop["format"])
+            self.set_format(self.prop.FORMAT)
         except Exception as e:
             print(e)
             print("[WARNING] Pixel format will set default value : ['NV12']")

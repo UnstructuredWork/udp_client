@@ -1,36 +1,47 @@
 import cv2
 import time
 import pickle
-from datetime import datetime
-from threading import Thread
+import subprocess
+
+from src.parallel import thread_method
 
 import pyk4a
 from pyk4a import Config, PyK4A
 from nvjpeg import NvJpeg
 from turbojpeg import TurboJPEG
 
-class Kinect:
-    def __init__(self, config_path):
-        self.k4a = PyK4A(
-            Config(
-                color_resolution=pyk4a.ColorResolution.RES_720P,
-                depth_mode=pyk4a.DepthMode.WFOV_2X2BINNED,
-                camera_fps=pyk4a.FPS.FPS_30
-            )
-        )
-
+class RgbdStreamer:
+    def __init__(self, cfg, meta):
         self.openCL = False
 
         if cv2.ocl.haveOpenCL():
             cv2.ocl.setUseOpenCL(True)
             self.openCL = True
 
-        self.imu   = None
-        self.rgb   = None
-        self.depth = None
-        self.frame = None
+        self.cfg = cfg
 
-        self.frame_time = None
+        self.fps_list = {"30": pyk4a.FPS.FPS_30,
+                         "15": pyk4a.FPS.FPS_30,
+                         "5": pyk4a.FPS.FPS_30}
+
+        self.resolution_list = {"3072": pyk4a.ColorResolution.RES_3072P,
+                                "2160": pyk4a.ColorResolution.RES_2160P,
+                                "1536": pyk4a.ColorResolution.RES_1536P,
+                                "1440": pyk4a.ColorResolution.RES_1440P,
+                                "1080": pyk4a.ColorResolution.RES_1080P,
+                                "720": pyk4a.ColorResolution.RES_720P}
+
+        self.k4a = PyK4A(
+            Config(
+                color_resolution=self.resolution_list[str(self.cfg.SIZE[1])],
+                depth_mode=pyk4a.DepthMode.WFOV_2X2BINNED,
+                camera_fps=self.fps_list[str(self.cfg.FPS)]
+            )
+        )
+
+        self.result = {"imu": None,
+                       "rgb": None,
+                       "depth": None}
 
         self.current_time = time.time()
         self.preview_time = time.time()
@@ -39,12 +50,7 @@ class Kinect:
 
         self.set()
 
-        self.imu_thread   = None
-        self.frame_thread = None
-
-        self.config = LoadConfig(config_path).info
-
-        if self.config["gpu_compression"]:
+        if subprocess.check_output(['nvidia-smi']):
             self.comp = NvJpeg()
         else:
             self.comp = TurboJPEG()
@@ -59,11 +65,8 @@ class Kinect:
         assert self.k4a.whitebalance == 4510
 
     def run(self):
-        self.imu_thread = Thread(target=self.imu_update, args=())
-        self.imu_thread.start()
-
-        self.frame_thread = Thread(target=self.frame_update, args=())
-        self.frame_thread.start()
+        self.imu_update()
+        self.frame_update()
 
         self.started = True
 
@@ -77,22 +80,21 @@ class Kinect:
 
         print("[INFO] Kinect stopped.")
 
+    @thread_method
     def imu_update(self):
         while True:
             if self.started:
                 acc_xyz = self.k4a.get_imu_sample().pop("acc_sample")
                 gyro_xyz = self.k4a.get_imu_sample().pop("gyro_sample")
-                self.imu = pickle.dumps([acc_xyz, gyro_xyz])
+                self.result["imu"] = pickle.dumps([acc_xyz, gyro_xyz])
 
+    @thread_method
     def frame_update(self):
         while True:
             if self.started:
-                self.rgb = self.k4a.get_capture().color[:, :, :3]
-                self.depth = self.k4a.get_capture().transformed_depth
-                self.frame_time = datetime.now().time().isoformat().encode('utf-8')
+                self.result["rgb"] = self.k4a.get_capture().color[:, :, :3]
+                self.result["depth"] = self.k4a.get_capture().transformed_depth
 
-                self.frame = self.comp.encode(self.rgb, 40) + b'frame' + \
-                             cv2.imencode('.png', self.depth, [cv2.IMWRITE_PNG_COMPRESSION, 4])[1].tobytes()
 
     def fps(self):
         self.current_time = time.time()

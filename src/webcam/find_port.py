@@ -8,7 +8,7 @@ def serial2port(subsystem, serial):
 
     for device in context.list_devices(subsystem=subsystem):
         if not port:
-            if device.get("ID_SERIAL_SHORT") == serial:
+            if int(device.get("ID_SERIAL_SHORT")) == int(serial):
                 test_port = int(device.get("DEVNAME")[-1])
 
                 cap = cv2.VideoCapture(test_port)
