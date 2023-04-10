@@ -9,7 +9,7 @@ def main():
     cfg = setup_cfg(args.config_file)
 
     setup_logger(cfg.SYSTEM.LOG.SAVE)
-    # setup_chrony(cfg.SYSTEM.SYNC.SERVER)
+    setup_chrony(cfg.SYSTEM.SYNC.SERVER)
 
     s = Stream(cfg)
     s.build_pipeline()
