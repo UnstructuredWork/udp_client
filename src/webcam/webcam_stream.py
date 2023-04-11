@@ -48,6 +48,7 @@ class StereoStreamer:
 
         self.started = False
 
+    @thread_method
     def run(self):
         print("")
         logger.info("Web camera stream service start.")

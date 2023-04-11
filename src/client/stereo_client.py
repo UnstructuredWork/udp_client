@@ -2,6 +2,7 @@ import zlib
 
 from .client import Client
 from datetime import datetime
+from src.parallel import thread_method
 
 class StereoClient(Client):
     def __init__(self, cfg, meta, side):
@@ -15,6 +16,7 @@ class StereoClient(Client):
 
         self.send_udp(package)
 
+    @thread_method
     def run(self, data):
         check = zlib.crc32(data)
         if self.duplicate_check != check:

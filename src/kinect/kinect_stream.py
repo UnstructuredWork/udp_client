@@ -64,6 +64,7 @@ class RgbdStreamer:
         self.k4a.whitebalance = 4510
         assert self.k4a.whitebalance == 4510
 
+    @thread_method
     def run(self):
         self.imu_update()
         self.frame_update()
