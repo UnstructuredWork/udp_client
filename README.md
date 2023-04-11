@@ -14,6 +14,10 @@
     $ sudo apt-get update
     $ sudo apt-get install libturbojpeg
     $ pip install -U git+https://github.com/lilohuang/PyTurboJPEG.git
+    $ sudo apt install k4a-tools
+    $ sudo apt install libk4a1.4
+    $ sudo apt install libk4a1.4-dev
+    $ pip install pyk4a
 
   ### 2) Download git:
     $ git clone https://github.com/UnstructuredWork/udp_client.git
@@ -32,8 +36,7 @@
      
   ### 4) Run
   ##### modify 'HOST' and 'PORT' before using
-    $ python main1.py
-    $ python main2.py
+    $ python main.py
     $ python ntp.py
  
   ### 5) Synchronize time
