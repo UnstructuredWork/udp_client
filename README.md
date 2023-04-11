@@ -8,22 +8,21 @@
 ## 2. Use
 
   ### 1) Make virtual environment & install dependencies :
-    $ sudo apt install k4a-tools libk4a4.1-dev libk4a4.1
     $ conda create -n UDP python=3.7
     $ conda activate UDP
-    $ pip install opencv-python==4.6.0.66 opencv-contrib-python==4.6.0.66 numpy pyudev pyyaml ntplib pip install pynvjpeg pyk4a
+    $ pip install opencv-python==4.6.0.66 opencv-contrib-python==4.6.0.66 numpy pyudev pyyaml ntplib pip install pynvjpeg
     $ sudo apt-get update
     $ sudo apt-get install libturbojpeg
     $ pip install -U git+https://github.com/lilohuang/PyTurboJPEG.git
-  
-  ### 2) Device setup (Azure Kinect)
-  ##### copy 'scripts/99-k4a.rules' into '/etc/udev/rules.d/'.
-  ##### Detach and reattach Azure Kinect devices  
+    $ sudo apt install k4a-tools
+    $ sudo apt install libk4a1.4
+    $ sudo apt install libk4a1.4-dev
+    $ pip install pyk4a
 
-  ### 3) Download git:
+  ### 2) Download git:
     $ git clone https://github.com/UnstructuredWork/udp_client.git
   
-  ### 4) Check the config file:
+  ### 3) Check the config file:
      > ./config/config.yaml
      ------------------------
         resolution: "1080"          # ["4K", "1080", "720"]
@@ -35,15 +34,15 @@
         l_serial: LEFT_CAMERA_SERIAL_NUMBER
         r_serial: RIGHT_CAMERA_SERIAL_NUMBER
      
-  ### 5) Run
+  ### 4) Run
   ##### modify 'HOST' and 'PORT' before using
     $ python main.py
     $ python ntp.py
-
-  ### 6) Synchronize time
+ 
+  ### 5) Synchronize time
   ##### [doc/time_synchronization.pptx](doc/time_synchronization.pptx)
 
-  ### 7) Check time synchronization
+  ### 6) Check time synchronization
     > python test/sync.py
     ------------------------
       NTP Server Time과 Local Time과 차이는 -1.36 ms입니다.
