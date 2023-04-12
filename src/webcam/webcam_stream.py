@@ -7,16 +7,16 @@ from nvjpeg import NvJpeg
 from turbojpeg import TurboJPEG
 
 from src.parallel import thread_method
+from src.fps import FPS
 from src.webcam.webcam_set import CamSet
+
 
 logger = logging.getLogger('__main__')
 
 class StereoStreamer:
     def __init__(self, cfg, meta, side):
-        self.openCL = False
         if cv2.ocl.haveOpenCL():
             cv2.ocl.setUseOpenCL(True)
-            self.openCL = True
 
         self.side = side
         if self.side == 'STEREO_L':
@@ -24,13 +24,10 @@ class StereoStreamer:
         else:
             self.cfg = cfg.STEREO_R
 
+        self.meta = meta
+
         self.cam = None
-        self.cam_thread = None
-
-        self.current_time = time.time()
-        self.preview_time = time.time()
-
-        self.sec = 0
+        self.fps = FPS()
 
         self.img = None
 
@@ -48,32 +45,27 @@ class StereoStreamer:
 
         self.started = False
 
-    @thread_method
     def run(self):
-        print("")
-        logger.info("Web camera stream service start.")
-        logger.info(f"[INFO] OpenCL activate: {self.openCL}")
+        logger.info(f"Start streaming camera:  [{self.side}]")
         self.stop()
 
         self.cam = CamSet(self.cfg)
-        if self.side == 'STEREO_L':
-            logger.info(f"[INFO] Left  camera initialization complete.")
-        else:
-            logger.info(f"[INFO] Right camera initialization complete.")
+        logger.info(f"Complete initialize camera: [{self.side}]")
 
         self.cam_update()
 
         self.started = True
-
-        logger.info("[INFO] All camera connections are complete.")
+        self.meta[self.side]['run'].value = self.started
 
     def stop(self):
         self.started = False
 
+        self.meta[self.side]['run'].value = self.started
+        self.meta[self.side]['fps'].value = 0.0
+
         if self.cam is not None:
             self.cam.release()
-
-        logger.info("[INFO] All camera stopped.")
+            logger.info("All camera stopped.")
 
     @thread_method
     def cam_update(self):
@@ -84,19 +76,9 @@ class StereoStreamer:
                 if ret:
                     self.img = frame
 
-    def fps(self):
-        self.current_time = time.time()
-        self.sec = self.current_time - self.preview_time
-        self.preview_time = self.current_time
-
-        if self.sec > 0:
-            fps = round((1/self.sec), 1)
-
-        else:
-            fps = 1
-
-        return fps
+                    self.fps.update()
+                    self.meta[self.side]['fps'].value = self.fps.get()
 
     def __exit__(self):
-        logger.info("[INFO] Streamer class exit")
+        logger.info("[INFO] Streamer class exit.")
         self.cam.release()

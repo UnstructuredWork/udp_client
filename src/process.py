@@ -8,6 +8,7 @@ from src.kinect.kinect_stream import RgbdStreamer
 from src.config import get_latency, restart_chrony
 from src.webcam.webcam_stream import StereoStreamer
 
+
 logger = logging.getLogger('__main__')
 
 def stream_sony(cfg, meta, side):
@@ -16,18 +17,37 @@ def stream_sony(cfg, meta, side):
 
     c = StereoClient(cfg.SERVER, meta, side)
     while True:
-        if s.img is not None:
-            c.run(s.img)
+        while meta['CONNECT'].value:
+            try:
+                if s.img is not None:
+                    c.run(s.img)
+                    meta[side]['send'].value = True
+
+            except Exception as e:
+                logger.error(e)
+
+        meta[side]['send'].value = False
+
+        time.sleep(1)
 
 def stream_kinect(cfg, meta, side):
     r = RgbdStreamer(cfg.HW_INFO.RGBD, meta)
-    r.run()
-
     c = RgbdClient(cfg.SERVER, meta, side)
-    while True:
-        if r.result["depth"] is not None:
-            c.run(r.result)
 
+    while True:
+        while meta['CONNECT'].value:
+            try:
+                r.run()
+
+                while True:
+                    if r.result["depth"] is not None:
+                        meta[side]['run'].value = True
+                        meta[side]['fps'].value = r.fps()
+
+                        c.run(r.result)
+
+            except Exception as e:
+                logger.error(f"Can't open the [{side}] camera: {e}")
 
 def monitor(cfg, meta):
     m = LogPrinter(cfg)

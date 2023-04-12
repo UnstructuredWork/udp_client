@@ -12,10 +12,10 @@ def _gen_meta():
     :return: meta data dictionary
     """
     d = dict()
-    d['use'] = Value('b', False)
+    d['use'] = Value('b', True)
     d['run'] = Value('b', False)
     d['fps'] = Value('f', 0.0)
-    d['lat'] = Value('f', 0.0)
+    d['send'] = Value('b', False)
 
     return d
 

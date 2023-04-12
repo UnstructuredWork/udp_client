@@ -53,5 +53,5 @@ HW_INFO:
   RGBD:   # Azure Kinect camera
     TYPE: kinect
     SIZE: [1280, 720]
-    USE: True
+    USE: False
     FPS: 30
