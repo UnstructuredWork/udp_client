@@ -51,7 +51,7 @@ class Client:
 
         self.side = side
 
-        if subprocess.check_output(['nvidia-smi']):
+        if subprocess.check_output(["nvcc", "-V"]):
             self.comp = NvJpeg()
         else:
             self.comp = TurboJPEG()
