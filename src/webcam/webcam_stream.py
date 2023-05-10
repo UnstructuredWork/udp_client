@@ -1,10 +1,6 @@
 import cv2
 import time
-import subprocess
 import logging.handlers
-
-from nvjpeg import NvJpeg
-from turbojpeg import TurboJPEG
 
 from src.parallel import thread_method
 from src.webcam.webcam_set import CamSet
@@ -33,11 +29,6 @@ class StereoStreamer:
         self.sec = 0
 
         self.img = None
-
-        if subprocess.check_output(['nvidia-smi']):
-            self.comp = NvJpeg()
-        else:
-            self.comp = TurboJPEG()
 
         w, h = self.cfg.SIZE
 

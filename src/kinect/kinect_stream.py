@@ -1,14 +1,11 @@
 import cv2
 import time
 import pickle
-import subprocess
 
 from src.parallel import thread_method
 
 import pyk4a
 from pyk4a import Config, PyK4A
-from nvjpeg import NvJpeg
-from turbojpeg import TurboJPEG
 
 class RgbdStreamer:
     def __init__(self, cfg, meta):
@@ -50,11 +47,6 @@ class RgbdStreamer:
 
         self.set()
 
-        if subprocess.check_output(['nvidia-smi']):
-            self.comp = NvJpeg()
-        else:
-            self.comp = TurboJPEG()
-
         self.started  = False
 
     def set(self):
@@ -95,7 +87,6 @@ class RgbdStreamer:
             if self.started:
                 self.result["rgb"] = self.k4a.get_capture().color[:, :, :3]
                 self.result["depth"] = self.k4a.get_capture().transformed_depth
-
 
     def fps(self):
         self.current_time = time.time()
