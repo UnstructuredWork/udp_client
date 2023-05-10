@@ -1,14 +1,11 @@
 import cv2
 import time
 import pickle
-import subprocess
 
 from src.parallel import thread_method
 
 import pyk4a
 from pyk4a import Config, PyK4A
-from nvjpeg import NvJpeg
-from turbojpeg import TurboJPEG
 
 class RgbdStreamer:
     def __init__(self, cfg, meta):
@@ -49,11 +46,6 @@ class RgbdStreamer:
         self.sec = 0
 
         self.set()
-
-        if subprocess.check_output(['nvidia-smi']):
-            self.comp = NvJpeg()
-        else:
-            self.comp = TurboJPEG()
 
         self.started  = False
 
