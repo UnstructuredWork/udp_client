@@ -24,7 +24,7 @@ class RgbdClient(Client):
 
     @thread_method
     def run(self, data):
-        check = zlib.crc32(data["depth"])
+        check = zlib.crc32(data["rgb"])
         if self.duplicate_check != check:
             self.duplicate_check = check
             self.imu = data["imu"]

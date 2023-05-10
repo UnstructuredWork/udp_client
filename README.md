@@ -1,4 +1,4 @@
-# udp_client
+# udp_client 
 ## 1. Envrionment
   - OS: Ubuntu 18.04
   - Language: Python 3.7
@@ -35,9 +35,11 @@
         r_serial: RIGHT_CAMERA_SERIAL_NUMBER
      
   ### 4) Run
+  ##### Create files('xx.avi', 'xx.csv') to add in the folder 'data'
+    $ python make_file.py
+
   ##### modify 'HOST' and 'PORT' before using
     $ python main.py
-    $ python ntp.py
  
   ### 5) Synchronize time
   ##### [doc/time_synchronization.pptx](doc/time_synchronization.pptx)

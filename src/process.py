@@ -2,32 +2,31 @@ import logging.handlers
 import time
 
 from src.log_printer import LogPrinter
+from src.custom.file_play import FilePlay
 from src.client.rgbd_client import RgbdClient
 from src.client.stereo_client import StereoClient
-from src.kinect.kinect_stream import RgbdStreamer
 from src.config import get_latency, restart_chrony
-from src.webcam.webcam_stream import StereoStreamer
 
 logger = logging.getLogger('__main__')
 
 def stream_sony(cfg, meta, side):
-    s = StereoStreamer(cfg.HW_INFO, meta, side)
-    s.run()
+    f = FilePlay(side, 'src/data/' + side + '.avi')
+    f.run()
 
     c = StereoClient(cfg.SERVER, meta, side)
     while True:
-        if s.img is not None:
-            c.run(s.img)
+        if f.img is not None:
+            c.run(f.img)
 
 def stream_kinect(cfg, meta, side):
-    r = RgbdStreamer(cfg.HW_INFO.RGBD, meta)
-    r.run()
+    file_list = ['src/data/RGB.avi', 'src/data/DEPTH.avi', 'src/data/IMU.csv']
+    f = FilePlay(side, file_list)
+    f.run()
 
     c = RgbdClient(cfg.SERVER, meta, side)
     while True:
-        if r.result["depth"] is not None:
-            c.run(r.result)
-
+        if f.result["depth"] is not None:
+            c.run(f.result)
 
 def monitor(cfg, meta):
     m = LogPrinter(cfg)
