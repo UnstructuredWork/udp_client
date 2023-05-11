@@ -19,7 +19,7 @@ def stream_sony(cfg, meta, side):
             c.run(f.img)
 
 def stream_kinect(cfg, meta, side):
-    file_list = ['src/data/RGB.avi', 'src/data/DEPTH.avi', 'src/data/IMU.csv']
+    file_list = ['src/data/RGB.avi', 'src/data/DEPTH.h5', 'src/data/IMU.csv']
     f = FilePlay(side, file_list)
     f.run()
 

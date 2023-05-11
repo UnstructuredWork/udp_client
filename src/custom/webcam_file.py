@@ -39,7 +39,7 @@ class StereoStreamer:
 
         self.started = False
 
-        self.vid = cv2.VideoWriter(str(self.side) + '.avi', cv2.VideoWriter_fourcc(*'DIVX'), self.cfg.FPS, (self.cfg.SIZE[0], self.cfg.SIZE[1]))
+        self.vid = cv2.VideoWriter(str(self.side) + '.avi', cv2.VideoWriter_fourcc(*'DIVX'), int(self.cfg.FPS * 0.75), (self.cfg.SIZE[0], self.cfg.SIZE[1]))
         self.str = None
 
     @thread_method

@@ -1,5 +1,6 @@
 import cv2
 import csv
+import h5py
 import time
 import pickle
 import numpy as np
@@ -51,10 +52,11 @@ class RgbdStreamer:
 
         self.started  = False
 
-        self.vid_1 = cv2.VideoWriter('RGB.avi', cv2.VideoWriter_fourcc(*'DIVX'), self.cfg.FPS/2, (self.cfg.SIZE[0], self.cfg.SIZE[1]))
-        self.vid_2 = cv2.VideoWriter('DEPTH.avi', cv2.VideoWriter_fourcc(*'DIVX'), self.cfg.FPS/2, (self.cfg.SIZE[0], self.cfg.SIZE[1]), isColor=False)
+        self.vid = cv2.VideoWriter('RGB.avi', cv2.VideoWriter_fourcc(*'DIVX'), self.cfg.FPS, (self.cfg.SIZE[0], self.cfg.SIZE[1]))
+        self.hdf5 = h5py.File('DEPTH.h5', 'w')
         self.csv = open('IMU.csv', 'w', newline='')
         self.csv_wr = csv.writer(self.csv)
+        self.index = 0
         self.str = None
 
     def set(self):
@@ -105,12 +107,13 @@ class RgbdStreamer:
                 self.result["depth"] = self.k4a.get_capture().transformed_depth
 
                 if time.time() - self.str < 350:
-                    self.vid_1.write(self.result["rgb"])
-                    self.vid_2.write(self.result["depth"].astype(np.uint8))
+                    self.vid.write(self.result["rgb"])
+                    self.hdf5[str(self.index)] = self.result['depth']
+                    self.index += 1
                 else:
                     print('----------------------------Record RGBD----------------------------')
-                    self.vid_1.release()
-                    self.vid_2.release()
+                    self.vid.release()
+                    self.hdf5.close()
 
     def fps(self):
         self.current_time = time.time()

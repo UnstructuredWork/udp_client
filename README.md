@@ -35,7 +35,7 @@
         r_serial: RIGHT_CAMERA_SERIAL_NUMBER
      
   ### 4) Run
-  ##### Create files('xx.avi', 'xx.csv') to add in the folder 'src/data'
+  ##### Create files('xx.avi', 'xx.h5', 'xx.csv') to add in the folder 'src/data'
     $ python make_file.py
 
   ##### modify 'HOST' and 'PORT' before using
