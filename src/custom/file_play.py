@@ -45,7 +45,11 @@ class FilePlay:
             else:
                 self.curr_time = time.perf_counter()
 
+            if video.get(cv2.CAP_PROP_POS_FRAMES) == video.get(cv2.CAP_PROP_FRAME_COUNT):
+                video.open(self.file)
 
+        video.release()
+        cv2.destroyAllWindows()
 
     @thread_method
     def rgbd_update(self):
@@ -73,7 +77,14 @@ class FilePlay:
             else:
                 self.curr_time = time.perf_counter()
 
+            if video.get(cv2.CAP_PROP_POS_FRAMES) == video.get(cv2.CAP_PROP_FRAME_COUNT):
+                video.open(self.file[0])
 
+                hdf5 = h5py.File(self.file[1], 'r')
+                index = 0
+
+        video.release()
+        cv2.destroyAllWindows()
 
     @thread_method
     def imu_update(self):
@@ -84,3 +95,5 @@ class FilePlay:
                 acc_xyz = eval(row[0])
                 gyro_xyz = eval(row[1])
                 self.result["imu"] = pickle.dumps([acc_xyz, gyro_xyz])
+
+            imu = csv.reader(open(self.file[2], "r"))
