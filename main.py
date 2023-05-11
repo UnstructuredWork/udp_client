@@ -1,6 +1,6 @@
 import argparse
 
-from src.config import get_cfg, setup_logger, setup_chrony
+from src.config import get_cfg, setup_logger
 from src import Stream
 
 
@@ -9,7 +9,6 @@ def main():
     cfg = setup_cfg(args.config_file)
 
     setup_logger(cfg.SYSTEM.LOG.SAVE)
-    setup_chrony(cfg.SYSTEM.SYNC.SERVER)
 
     s = Stream(cfg)
     s.build_pipeline()

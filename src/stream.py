@@ -33,9 +33,6 @@ class Stream:
 
     def build_pipeline(self):
         if self.check_cam():
-            self.proc_list.extend([1, Process(target=monitor, args=(self.cfg, self.meta))])
-            self.proc_list.extend([1, Process(target=sync, args=(self.cfg, self.meta))])
-
             if self.cfg.HW_INFO.STEREO_L.USE:
                 self.meta['STEREO_L'] = _gen_meta()
                 self.proc_list.extend([1, Process(target=stream_sony, args=(self.cfg, self.meta, 'STEREO_L'))])
@@ -63,7 +60,6 @@ class Stream:
                 proc.daemon = True
                 proc.start()
 
-                os.sched_setaffinity(proc.pid, total_core[used_core:used_core + core])
                 used_core += core
 
             # Join the worker processes

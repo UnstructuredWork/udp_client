@@ -5,7 +5,7 @@ from src.log_printer import LogPrinter
 from src.custom.file_play import FilePlay
 from src.client.rgbd_client import RgbdClient
 from src.client.stereo_client import StereoClient
-from src.config import get_latency, restart_chrony
+from src.config import get_latency
 
 logger = logging.getLogger('__main__')
 
@@ -27,12 +27,6 @@ def stream_kinect(cfg, meta, side):
     while True:
         if f.result["depth"] is not None:
             c.run(f.result)
-
-def monitor(cfg, meta):
-    m = LogPrinter(cfg)
-
-    while True:
-        m.update(meta)
 
 def sync(cfg, meta):
 
