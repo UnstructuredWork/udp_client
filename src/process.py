@@ -2,30 +2,41 @@ import logging.handlers
 import time
 
 from src.log_printer import LogPrinter
-from src.custom.file_play import FilePlay
-from src.client.rgbd_client import RgbdClient
-from src.client.stereo_client import StereoClient
+from src.play.multiple_data import MultipleData
+from src.play.single_image import SingleImage
+from src.play.h5player import H5Player
+from src.client.multiple_client import MultipleDataClient
+from src.client.single_client import SingleDataClient
 from src.config import get_latency
 
 logger = logging.getLogger('__main__')
 
-def stream_sony(cfg, meta, side):
-    f = FilePlay(side, 'src/data/' + side + '.avi')
+def play_avi(cfg, side):
+    f = SingleImage('src/data/' + side + '.avi')
     f.run()
 
-    c = StereoClient(cfg.SERVER, meta, side)
+    c = SingleDataClient(cfg.SERVER, side)
     while True:
-        if f.img is not None:
-            c.run(f.img)
+        if f.result is not None:
+            c.run(f.result)
 
-def stream_kinect(cfg, meta, side):
+def play_multi(cfg, side):
     file_list = ['src/data/RGB.avi', 'src/data/DEPTH.h5', 'src/data/IMU.csv']
-    f = FilePlay(side, file_list)
+    f = MultipleData(file_list)
     f.run()
 
-    c = RgbdClient(cfg.SERVER, meta, side)
+    c = MultipleDataClient(cfg.SERVER, side)
     while True:
         if f.result["depth"] is not None:
+            c.run(f.result)
+
+def play_h5(cfg, side):
+    f = H5Player('src/data/' + side + '.h5')
+    f.run()
+
+    c = SingleDataClient(cfg.SERVER, side)
+    while True:
+        if f.result is not None:
             c.run(f.result)
 
 def sync(cfg, meta):
@@ -48,7 +59,6 @@ def sync(cfg, meta):
                     logger.info(f"High latency: {latency:.2f} ms")
 
                     try:
-                        restart_chrony()
                         logger.info(f"Restart sync service.")
                         time.sleep(5)
                     except Exception as e:

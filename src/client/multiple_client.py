@@ -5,9 +5,9 @@ from .client import Client
 from datetime import datetime
 from src.parallel import thread_method
 
-class RgbdClient(Client):
-    def __init__(self, cfg, meta, side):
-        super().__init__(cfg, meta, side)
+class MultipleDataClient(Client):
+    def __init__(self, cfg, side):
+        super().__init__(cfg, side)
         self.imu   = None
         self.rgb   = None
         self.depth = None

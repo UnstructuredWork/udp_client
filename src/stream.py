@@ -32,20 +32,20 @@ class Stream:
         self.meta['LATENCY']  = Value('f', 0.0)
 
     def build_pipeline(self):
-        if self.check_cam():
-            if self.cfg.HW_INFO.STEREO_L.USE:
-                self.meta['STEREO_L'] = _gen_meta()
-                self.proc_list.extend([1, Process(target=stream_sony, args=(self.cfg, self.meta, 'STEREO_L'))])
+        if self.cfg.SW_INFO.STEREO_L:
+            self.proc_list.extend([1, Process(target=play_avi, args=(self.cfg, 'STEREO_L'))])
 
-            if self.cfg.HW_INFO.STEREO_R.USE:
-                self.meta['STEREO_R'] = _gen_meta()
-                self.proc_list.extend([1, Process(target=stream_sony, args=(self.cfg, self.meta, 'STEREO_R'))])
+        if self.cfg.SW_INFO.STEREO_R:
+            self.proc_list.extend([1, Process(target=play_avi, args=(self.cfg, 'STEREO_R'))])
 
-            if self.cfg.HW_INFO.RGBD.USE:
-                self.meta['RGBD'] = _gen_meta()
-                self.proc_list.extend([1, Process(target=stream_kinect, args=(self.cfg, self.meta, 'RGBD'))])
-        else:
-            logger.info("No camera selected.")
+        if self.cfg.SW_INFO.RGBD:
+            self.proc_list.extend([1, Process(target=play_multi, args=(self.cfg, 'RGBD'))])
+
+        if self.cfg.SW_INFO.DETECTION:
+            self.proc_list.extend([1, Process(target=play_h5, args=(self.cfg, 'DETECTION'))])
+
+        if self.cfg.SW_INFO.MONO_DEPTH:
+            self.proc_list.extend([1, Process(target=play_avi, args=(self.cfg, 'MONO_DEPTH'))])
 
     def run(self):
         if self.proc_list:
@@ -65,12 +65,6 @@ class Stream:
             # Join the worker processes
             for proc in procs:
                 proc.join()
-
-    def check_cam(self):
-        if self.cfg.HW_INFO.STEREO_L.USE or self.cfg.HW_INFO.STEREO_R.USE or self.cfg.HW_INFO.RGBD.USE:
-            return True
-        else:
-            return False
 
     def __del__(self):
         if self.proc_list:
