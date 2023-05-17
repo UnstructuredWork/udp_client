@@ -30,7 +30,7 @@ def play_multi(cfg, side):
             c.run(f.result)
 
 def play_h5(cfg, side):
-    f = H5Player('src/data/' + side + '.h5')
+    f = H5Player('src/data/' + side + '.h5', side)
     f.run()
 
     c = SingleDataClient(cfg.SERVER, side)

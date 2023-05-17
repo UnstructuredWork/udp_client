@@ -45,7 +45,7 @@ class Stream:
             self.proc_list.extend([1, Process(target=play_h5, args=(self.cfg, 'DETECTION'))])
 
         if self.cfg.SW_INFO.MONO_DEPTH:
-            self.proc_list.extend([1, Process(target=play_avi, args=(self.cfg, 'MONO_DEPTH'))])
+            self.proc_list.extend([1, Process(target=play_h5, args=(self.cfg, 'MONO_DEPTH'))])
 
     def run(self):
         if self.proc_list:
