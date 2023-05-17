@@ -1,7 +1,6 @@
 import logging.handlers
 import time
 
-from src.log_printer import LogPrinter
 from src.play.multiple_data import MultipleData
 from src.play.single_image import SingleImage
 from src.play.h5player import H5Player
