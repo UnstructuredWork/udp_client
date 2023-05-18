@@ -9,7 +9,7 @@ def main():
     cfg = setup_cfg(args.config_file)
 
     s1 = StereoStreamer(cfg.HW_INFO, 'STEREO_L')
-    s2 = StereoStreamer(cfg.HW_INFO, 'STEREP_R')
+    s2 = StereoStreamer(cfg.HW_INFO, 'STEREO_R')
     r = RgbdStreamer(cfg.HW_INFO.RGBD)
 
     s1.run()
