@@ -19,6 +19,7 @@ class H5Player(FilePlay):
 
     def update1(self):
         hdf5 = h5py.File(self.file, 'r')
+        total_index = len(hdf5['classes'])
         index = 0
 
         frame_duration = 1 / 10         # FPS : 10
@@ -28,7 +29,6 @@ class H5Player(FilePlay):
         while True:
             elapsed_time = self.curr_time - self.prev_time
             if elapsed_time > frame_duration:
-                total_index = len(hdf5['bboxes'][str(index)][:])
                 classes = hdf5['classes'][str(index)][:]
                 bboxes = hdf5['bboxes'][str(index)][:]
                 mask = hdf5['mask'][str(index)][:]
@@ -60,6 +60,7 @@ class H5Player(FilePlay):
 
                 self.result = frame
                 self.prev_time = time.perf_counter()
+
                 index += 1
             else:
                 self.curr_time = time.perf_counter()
