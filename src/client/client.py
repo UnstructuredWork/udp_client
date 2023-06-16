@@ -1,6 +1,7 @@
 from __future__ import division
 import cv2
 import math
+import zlib
 import socket
 import struct
 import subprocess
@@ -21,25 +22,17 @@ class Package:
         elif self.side == 'STEREO_R':
             self.port = self.cfg.PORT.STEREO_R
             self.size = self.cfg.SIZE.STEREO_R
-        elif self.side == 'RGBD':
+        else:
             self.port = self.cfg.PORT.RGBD
             self.size = self.cfg.SIZE.RGBD
-        elif self.side == 'DETECTION':
-            self.port = self.cfg.PORT.DETECTION
-            self.size = self.cfg.SIZE.DETECTION
-        elif self.side == 'MONO_DEPTH':
-            self.port = self.cfg.PORT.MONO_DEPTH
-            self.size = self.cfg.SIZE.MONO_DEPTH
 
         self.imu = None
 
         self.frame = None
         self.get_img_time = None
 
-        self.header = None
-        
 class Client:
-    def __init__(self, cfg, side):
+    def __init__(self, cfg, meta, side):
         self.sock = None
         self.sock_udp()
 
@@ -64,12 +57,12 @@ class Client:
             self.comp = TurboJPEG()
 
         if cfg.CLOUD.SEND:
-            self.pack_cloud = Package(self.cfg.CLOUD, self.side)
+            self.pack_cloud = Package(self.cfg.CLOUD, side)
         else:
             self.pack_cloud = None
 
         if cfg.UNITY.SEND:
-            self.pack_unity = Package(self.cfg.UNITY, self.side)
+            self.pack_unity = Package(self.cfg.UNITY, side)
         else:
             self.pack_unity = None
 
@@ -80,7 +73,14 @@ class Client:
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
+    def udp_header(self, frame):
+        checksum = zlib.crc32(frame)
+        header = struct.pack("!I", checksum)
+
+        return header
+
     def send_udp(self, package):
+        udp_header = self.udp_header(package.frame)
         size = len(package.frame)
         count = math.ceil(size / (self.MAX_IMAGE_DGRAM))
         total_count = count
@@ -97,7 +97,7 @@ class Client:
             try:
                 if package.imu is None:
                     self.sock.sendto(struct.pack("B", count) + b'end' +
-                                     package.header + b'end' +
+                                     udp_header + b'end' +
                                      packet_num + b'end' +
                                      package.get_img_time + b'end' +
                                      str(len(package.frame)).encode('utf-8') + b'end' +
@@ -105,7 +105,7 @@ class Client:
                                      package.frame[array_pos_start:array_pos_end], (package.host[0], package.port))
                 else:
                     self.sock.sendto(struct.pack("B", count) + b'end' +
-                                     package.header + b'end' +
+                                     udp_header + b'end' +
                                      packet_num + b'end' +
                                      package.get_img_time + b'end' +
                                      str(len(package.frame)).encode('utf-8') + b'end' +
