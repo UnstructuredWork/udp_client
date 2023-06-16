@@ -13,17 +13,16 @@ class StereoClient(Client):
         rgb = self.rgb
         package.get_img_time = datetime.now().time().isoformat().encode('utf-8')
         package.frame = self.comp.encode(self.resize(rgb, package), 40)
-
-        self.send_udp(package)
+        check = zlib.crc32(package.frame)
+        if self.duplicate_check != check:
+            self.duplicate_check = check
+            self.send_udp(package)
 
     @thread_method
     def run(self, data):
-        check = zlib.crc32(data)
-        if self.duplicate_check != check:
-            self.duplicate_check = check
-            self.rgb = data
-            if self.pack_cloud is not None:
-                self.bytescode(self.pack_cloud)
+        self.rgb = data
+        if self.pack_cloud is not None:
+            self.bytescode(self.pack_cloud)
 
-            if self.pack_unity is not None:
-                self.bytescode(self.pack_unity)
+        if self.pack_unity is not None:
+            self.bytescode(self.pack_unity)
