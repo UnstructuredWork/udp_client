@@ -1,4 +1,5 @@
 import zlib
+import struct
 
 from .client import Client
 from datetime import datetime
@@ -16,6 +17,7 @@ class StereoClient(Client):
         check = zlib.crc32(package.frame)
         if self.duplicate_check != check:
             self.duplicate_check = check
+            package.header = struct.pack("!I", check)
             self.send_udp(package)
 
     @thread_method
