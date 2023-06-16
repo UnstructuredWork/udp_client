@@ -1,7 +1,6 @@
 from __future__ import division
 import cv2
 import math
-import zlib
 import socket
 import struct
 import subprocess
