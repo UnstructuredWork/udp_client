@@ -22,15 +22,9 @@ class Package:
         elif self.side == 'STEREO_R':
             self.port = self.cfg.PORT.STEREO_R
             self.size = self.cfg.SIZE.STEREO_R
-        elif self.side == 'RGBD':
+        else:
             self.port = self.cfg.PORT.RGBD
             self.size = self.cfg.SIZE.RGBD
-        elif self.side == 'DETECTION':
-            self.port = self.cfg.PORT.DETECTION
-            self.size = self.cfg.SIZE.DETECTION
-        elif self.side == 'MONO_DEPTH':
-            self.port = self.cfg.PORT.MONO_DEPTH
-            self.size = self.cfg.SIZE.MONO_DEPTH
 
         self.imu = None
 
@@ -38,7 +32,7 @@ class Package:
         self.get_img_time = None
 
 class Client:
-    def __init__(self, cfg, side):
+    def __init__(self, cfg, meta, side):
         self.sock = None
         self.sock_udp()
 
@@ -63,12 +57,12 @@ class Client:
             self.comp = TurboJPEG()
 
         if cfg.CLOUD.SEND:
-            self.pack_cloud = Package(self.cfg.CLOUD, self.side)
+            self.pack_cloud = Package(self.cfg.CLOUD, side)
         else:
             self.pack_cloud = None
 
         if cfg.UNITY.SEND:
-            self.pack_unity = Package(self.cfg.UNITY, self.side)
+            self.pack_unity = Package(self.cfg.UNITY, side)
         else:
             self.pack_unity = None
 
