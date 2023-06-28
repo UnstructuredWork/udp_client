@@ -99,7 +99,6 @@ class Client:
             packet_num = (str(self.img_num).zfill(3) + '-' +
                           str(total_count) + '-' +
                           str(total_count - count + 1)).encode('utf-8')
-
             try:
                 if package.imu is None:
                     self.sock.sendto(struct.pack("B", count) + b'end' +
